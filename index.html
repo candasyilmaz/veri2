@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Veri Girişi Hata Türleri Simülasyonları</title>
+<style>
+:root{--bg:#f7f6f2;--card:#fff;--tx:#1d1d1b;--mu:#6b6a64;--bd:#dcdad2;--ac:#2a5bd7;--ok:#1a7f4b;--okb:#e3f4ea;--er:#c0392b;--erb:#fbe9e7;--wa:#9a6700;--wab:#fff4d6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171716;--card:#232321;--tx:#ecebe5;--mu:#a3a29a;--bd:#3a3a36;--ac:#7ea2ff;--ok:#5fd394;--okb:#17301f;--er:#ff8a7a;--erb:#3a1f1b;--wa:#f2c14e;--wab:#3a3012}}
+:root[data-theme="dark"]{--bg:#171716;--card:#232321;--tx:#ecebe5;--mu:#a3a29a;--bd:#3a3a36;--ac:#7ea2ff;--ok:#5fd394;--okb:#17301f;--er:#ff8a7a;--erb:#3a1f1b;--wa:#f2c14e;--wab:#3a3012}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.6rem;margin:0 0 4px}h2{font-size:1.2rem;margin:0 0 6px}
+.sub{color:var(--mu);margin:0 0 14px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+nav button{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:9px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:.92rem}
+nav button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+section{display:none;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px}
+section.on{display:block}
+.sc{background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:14px;font-size:1.05rem;margin:10px 0}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin-top:8px}
+.opts button,.btn{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:9px 10px;border-radius:10px;font:inherit;font-size:.9rem;cursor:pointer;text-align:left}
+.opts button:hover:not(:disabled){border-color:var(--ac)}
+.opts button.good{background:var(--okb);border-color:var(--ok);color:var(--ok)}
+.opts button.bad{background:var(--erb);border-color:var(--er);color:var(--er)}
+.btn{background:var(--ac);color:#fff;border-color:var(--ac);margin-top:12px;text-align:center;padding:10px 18px}
+.note{padding:10px 12px;border-radius:10px;margin-top:12px;font-size:.93rem}
+.ok{background:var(--okb);color:var(--ok)}.er{background:var(--erb);color:var(--er)}.wa{background:var(--wab);color:var(--wa)}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:end}.row>div{flex:1;min-width:110px}
+label{font-size:.85rem;color:var(--mu);display:block;margin-bottom:3px}
+input[type=text],input[type=number],select{width:100%;padding:9px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+.big{font-size:1.4rem;font-weight:700}
+.prog{height:8px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:8px}
+.prog i{display:block;height:100%;background:var(--ac);width:0;transition:width .3s}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.cards div{border:1px solid var(--bd);border-radius:12px;padding:12px;background:var(--bg)}
+.bars{display:flex;gap:6px;align-items:flex-end;height:110px;margin:12px 0;border-bottom:1px solid var(--bd)}
+.bars div{flex:1;background:var(--ac);border-radius:4px 4px 0 0;font-size:.7rem;text-align:center;color:#fff;min-height:2px}
+.bars div.u{background:var(--er)}
+</style>
+</head>
+<body>
+<main>
+<h1>Veri Girişi Hata Türleri: Simülasyonlar</h1>
+<p class="sub">Adım 3’teki hata türlerini uygulayarak öğrenin. Bir etkinlik seçin.</p>
+<nav id="tabs">
+<button class="on" data-t="s1">1. Hata Türü Eşleştirme</button>
+<button data-t="s2">2. Transpozisyon Dedektifi</button>
+<button data-t="s3">3. Tarih Belirsizliği</button>
+<button data-t="s4">4. Sahte Doluluk</button>
+</nav>
+
+<section id="s1" class="on">
+<h2>Hata Türü Eşleştirme</h2>
+<p class="sub">Her durumun hangi hata türüne girdiğini seçin.</p>
+<div class="prog"><i id="pg"></i></div>
+<div id="q1"></div>
+</section>
+
+<section id="s2">
+<h2>Transpozisyon Dedektifi</h2>
+<p class="sub">Yan yana iki rakamın yer değiştirmesinden doğan fark her zaman 9’a bölünür. Doğru ve yanlış girilen sayıyı karşılaştırın.</p>
+<div class="row">
+<div><label>Doğru sayı</label><input type="number" id="a" value="4580"></div>
+<div><label>Girilen (hatalı) sayı</label><input type="number" id="b" value="4850"></div>
+</div>
+<div id="o2"></div>
+<h2 style="margin-top:20px">Bilanço Farkı Testi</h2>
+<p class="sub">Bilançonuz tutmuyor. Farkı girin, transpozisyon olasılığına bakın.</p>
+<div class="row"><div><label>Bilanço farkı</label><input type="number" id="d" value="270"></div></div>
+<div id="o2b"></div>
+</section>
+
+<section id="s3">
+<h2>Tarih Belirsizliği</h2>
+<p class="sub">03/04/2026 sizin için hangi tarih? Gün, ay ve yılı yazın, iki farklı okumayı görün.</p>
+<div class="row">
+<div><label>Birinci sayı</label><input type="number" id="x" value="3" min="1" max="31"></div>
+<div><label>İkinci sayı</label><input type="number" id="y" value="4" min="1" max="31"></div>
+<div><label>Yıl</label><input type="number" id="z" value="2026"></div>
+</div>
+<div id="o3"></div>
+</section>
+
+<section id="s4">
+<h2>Sahte Doluluk</h2>
+<p class="sub">10 müşterinin yaşı var, 3’ünün yaşı bilinmiyor. Operatör boş bırakmak yerine bir değer yazarsa ortalamaya ne olur?</p>
+<div class="row">
+<div><label>Bilinmeyen yaşlara yazılan değer</label>
+<select id="ph"><option value="0">0</option><option value="99">99</option><option value="1">1</option><option value="">Boş bırakıldı</option></select></div>
+</div>
+<div class="bars" id="bars"></div>
+<div id="o4"></div>
+</section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+$('#tabs').onclick=e=>{const t=e.target.dataset.t;if(!t)return;
+document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b===e.target));
+document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===t))};
+
+/* 1. Eşleştirme */
+const T=['Yazım / aktarım','Transpozisyon','Ondalık / büyüklük','Birim','Format tutarsızlığı','Eksik veri','Tekrar kayıt','Varsayım'];
+const Q=[
+['Fatura tutarı 2.340 yerine 2.430 girildi.',1,'Yan yana iki rakam yer değişti. Fark 90, yani 9’a bölünür.'],
+['Sipariş “5 kg” yerine “5” girildi, depo 5 adet sandı.',3,'Sayı doğru ama birim yok ya da yanlış varsayıldı.'],
+['Maaş 45.000 yerine 450.000 girildi.',2,'Rakamlar doğru, büyüklük 10 kat sapmış. Aralık kontrolü yakalar.'],
+['Telefon alanına “0” yazıldı.',5,'Sahte doluluk: boş değil ama bilgi de yok. Gerçek değer gibi sayılır.'],
+['Aynı müşteri “Mehmet Öz” ve “mehmet oz” olarak iki kez kayıtlı.',6,'Aramadan yeni kayıt açılmış. İ/ö gibi Türkçe karakter kaybı bunu gizler.'],
+['Okunamayan tutar için operatör “muhtemelen 700” yazdı.',7,'Tahminle doldurma. Değer geçerli ve makul göründüğü için kontroller yakalamaz.'],
+['Teslim tarihi 05/06/2026 girildi; biri 6 Mayıs, diğeri 5 Haziran okudu.',4,'Tarih biçimi standart değil (GG/AA ve AA/GG karışıklığı).'],
+['Müşteri adı “Ayşe” yerine “Ayşr” yazıldı.',0,'Yanlış tuşa basma: bir karakter değiştirilmiş.']];
+let i1=0,sc1=0,ans=false;
+function show1(){
+if(i1>=Q.length){$('#pg').style.width='100%';$('#q1').innerHTML=`<div class="note ${sc1>=6?'ok':'wa'}"><span class="big">${sc1} / ${Q.length}</span><br>${sc1>=6?'Çok iyi! Hata türlerini ayırt edebiliyorsunuz.':'Yanlış yaptığınız türleri Adım 3’teki tabloyla tekrar gözden geçirin.'}</div><button class="btn" id="re">Yeniden başla</button>`;
+$('#re').onclick=()=>{i1=0;sc1=0;show1()};return}
+ans=false;$('#pg').style.width=(i1/Q.length*100)+'%';
+$('#q1').innerHTML=`<div class="sc"><b>Durum ${i1+1}/${Q.length}:</b> ${Q[i1][0]}</div><div class="opts">${T.map((t,k)=>`<button data-k="${k}">${t}</button>`).join('')}</div><div id="fb"></div>`}
+$('#q1').onclick=e=>{const k=e.target.dataset.k;if(k===undefined||ans)return;ans=true;
+const ok=+k===Q[i1][1];if(ok)sc1++;
+document.querySelectorAll('.opts button').forEach(b=>{b.disabled=true;if(+b.dataset.k===Q[i1][1])b.classList.add('good');else if(b===e.target)b.classList.add('bad')});
+$('#fb').innerHTML=`<div class="note ${ok?'ok':'er'}"><b>${ok?'Doğru!':'Doğru cevap: '+T[Q[i1][1]]}</b> ${Q[i1][2]}</div><button class="btn" id="nx">${i1===Q.length-1?'Sonucu gör':'Sonraki'}</button>`;
+$('#nx').onclick=()=>{i1++;show1()}};
+show1();
+
+/* 2. Transpozisyon */
+const f=n=>Math.abs(Math.round(n)).toLocaleString('tr-TR');
+function adj(a,b){a=String(a);b=String(b);if(a.length!==b.length)return false;let d=[];for(let i=0;i<a.length;i++)if(a[i]!==b[i])d.push(i);
+return d.length===2&&d[1]===d[0]+1&&a[d[0]]===b[d[1]]&&a[d[1]]===b[d[0]]}
+function c2(){const a=+$('#a').value,b=+$('#b').value,o=$('#o2');if(!a||!b||a===b){o.innerHTML='<div class="note wa">İki farklı sayı girin.</div>';return}
+const d=Math.abs(a-b),m=d%9===0,t=adj($('#a').value,$('#b').value);
+o.innerHTML=`<div class="note ${t?'ok':'wa'}">Fark: <span class="big">${f(d)}</span> · 9’a bölünür mü? <b>${m?'Evet ('+f(d/9)+' × 9)':'Hayır'}</b><br>${t?'Bu gerçekten yan yana iki rakamın yer değiştirmesi (transpozisyon).':m?'Fark 9’a bölünüyor ama bu tam bir transpozisyon değil. Bu bir ipucudur, kanıt değil.':'Bu transpozisyon değil, büyük olasılıkla başka tür bir yazım hatası.'}</div>`}
+function c2b(){const d=+$('#d').value,o=$('#o2b');if(!d){o.innerHTML='';return}
+const m=d%9===0;o.innerHTML=`<div class="note ${m?'ok':'wa'}">${m?`Fark ${f(d)} değeri 9’a bölünüyor (${f(d/9)}). Güçlü bir <b>transpozisyon</b> şüphesi var: yan yana iki rakam yer değiştirmiş olabilir.`:`Fark ${f(d)} değeri 9’a bölünmüyor. Transpozisyon olasılığı düşük, başka hata türlerini (yazım, büyüklük, eksik kayıt) arayın.`}</div>`}
+['a','b'].forEach(x=>$('#'+x).oninput=c2);$('#d').oninput=c2b;c2();c2b();
+
+/* 3. Tarih */
+const AY=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+function rd(g,a,y){if(a<1||a>12||g<1||g>31)return null;const d=new Date(y,a-1,g);return d.getMonth()===a-1?`${g} ${AY[a-1]} ${y}`:null}
+function c3(){const x=+$('#x').value,y=+$('#y').value,z=+$('#z').value,o=$('#o3');
+const tr=rd(x,y,z),us=rd(y,x,z),amb=tr&&us&&x!==y;
+o.innerHTML=`<div class="cards"><div><label>Türkiye okuması (GG/AA/YYYY)</label><b>${tr||'Geçersiz tarih'}</b></div><div><label>ABD okuması (AA/GG/YYYY)</label><b>${us||'Geçersiz tarih'}</b></div></div>
+<div class="note ${amb?'er':'ok'}">${amb?'<b>Belirsiz!</b> İki okuma de geçerli ve farklı. Sistem sessizce birini seçer, hata fark edilmez.':tr||us?'Belirsizlik yok: tek bir geçerli okuma var ya da iki sayı aynı.':'Her iki okumada da geçersiz.'}</div>
+<div class="note wa">Çözüm: Depolamada ISO 8601 (YYYY-AA-GG) kullanın ${tr?'→ <b>'+z+'-'+String(y).padStart(2,'0')+'-'+String(x).padStart(2,'0')+'</b> (Türkiye okumasına göre)':''}. Girişte elle yazmak yerine tarih seçici kullanın. Gün 12’den büyükse belirsizlik kalkar, bunu deneyin (örn. 25 ve 3).</div>`}
+['x','y','z'].forEach(k=>$('#'+k).oninput=c3);c3();
+
+/* 4. Sahte doluluk */
+const K=[34,41,29,52,38,45,31],U=3;
+function c4(){const v=$('#ph').value,all=K.concat(Array(U).fill(v===''?null:+v)).filter(x=>x!==null);
+const m=all.reduce((a,b)=>a+b,0)/all.length,tm=K.reduce((a,b)=>a+b,0)/K.length,dif=(m-tm)/tm*100;
+const mx=Math.max(...all,60);
+$('#bars').innerHTML=K.map(a=>`<div style="height:${a/mx*100}%">${a}</div>`).join('')+(v===''?'':Array(U).fill(0).map(()=>`<div class="u" style="height:${Math.max(+v/mx*100,2)}%">${v}</div>`).join(''));
+$('#o4').innerHTML=`<div class="cards"><div><label>Gerçek ortalama (bilinenler)</label><span class="big">${tm.toFixed(1)}</span></div><div><label>Sistemin hesapladığı ortalama</label><span class="big">${m.toFixed(1)}</span></div></div>
+<div class="note ${v===''?'ok':'er'}">${v===''?'Boş bırakılan kayıtlar hesaba girmez, ortalama doğru kalır. Eksiklik görünür olur ve temizlenebilir.':`Sahte değer ortalamayı <b>%${Math.abs(dif).toFixed(0)} ${dif<0?'aşağı':'yukarı'}</b> kaydırdı ve kimse fark etmedi. Kırmızı sütunlar sahte doluluktur.`}</div>
+<div class="note wa">Kural: Bilinmeyen değeri uydurma. Boş bırak ya da standart “Bilinmiyor” kodunu kullan. Sıfır (gerçek değer) ile boş (bilgi yok) farklı şeylerdir.</div>`}
+$('#ph').onchange=c4;c4();
+</script>
+</body>
+</html>
